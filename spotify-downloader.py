@@ -134,4 +134,4 @@ def process_playlist(spotify_playlist_url, out_dir):
         Thread(target=worker, args=(q, out_dir,) ).start()
 
 
-process_playlist('https://open.spotify.com/playlist/1tfd13CdhPKHfjVJ9MqdzW?si=702d1c42a6c14b26', 'hh')
+process_playlist('https://open.spotify.com/playlist/6X2pHYQ2jqVkuu2X75Irou?si=c9342e1b6cfe43df', 'hh')
