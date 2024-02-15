@@ -9,6 +9,11 @@ from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, TIT2, TIT3, TALB, TPE1, TRCK, TYER, APIC 
 from threading import Thread
 from queue import Queue
+import sqlite3
+
+from yt_dlp.utils import DownloadError
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Your Spotify api Credentials here
 cid = '2e8dd0db5bb148ace9aaca6a227b11'
@@ -64,9 +69,16 @@ def ytsearch( track_id3_tags ):
 def download_audio(video_id, title, out_dir):
     link = 'https://music.youtube.com/watch?v=' + video_id
     postprocessors = [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3','preferredquality': '360',} ]
-    video = yt_dlp.YoutubeDL({'extract_audio': True, 'verbose':False, 'format': 'bestaudio', 'outtmpl': out_dir + '/' + title, 'quiet':True, 'postprocessors': postprocessors })
-    video.download(link)
-    print("Successfully Downloaded --> " + title)
+    # Download audio. Return 1 if succesfull else 0
+    try:
+        video = yt_dlp.YoutubeDL({'extract_audio': True, 'verbose':False, 'format': 'bestaudio', 'outtmpl': out_dir + '/' + title, 'quiet':True, 'postprocessors': postprocessors })
+        video.download(link)
+        print('\33[32m' + "Successfully Downloaded --> " + title + '\033[0m')
+        return 1
+        
+    except DownloadError:
+        print('\33[31m' + title + " -- Youtube Download Error" + '\033[0m')
+        return 0
 
 def add_id3_tags(track_id3_tags, out_dir):
     # print(EasyID3.valid_keys.keys())
